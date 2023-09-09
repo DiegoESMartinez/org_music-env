@@ -105,21 +105,15 @@ def mudar_media_multidisc(carpeta_origen,destinacion):
 
     contenido_origen=os.listdir(carpeta_origen)
 
-    print(carpeta_destino)
-
     # Recorre el directorio de origen
 # Recorre el directorio de origen y sus subdirectorios de forma recursiva
-    print("###########################################################")
     for filename in contenido_origen:
-            print(f"{filename} : {os.path.basename(filename).endswith(('.pdf', '.jpg')) and not os.path.basename(filename).startswith('.')}")
             if filename.endswith((".pdf", ".jpg")) and not filename.startswith("."):
                 origen = os.path.join(carpeta_origen,filename)
                 destino = os.path.join(carpeta_destino,filename)
-                print(f"ORIGEN: {origen} -|- DESTINO: {destino}")
                 shutil.copy2(origen, destino)
                 print(f"Moviendo {filename} a {carpeta_destino}")
-    
-    print("###########################################################")
+
 #FUNCION PARA SACAR METADATOS DE MP3
 def extraer_datos(path):
     if existeRuta(path):
@@ -158,7 +152,6 @@ def multi_disco(path,item_path):
     else:
         ruta_destino = crear_directorios(datos_album) 
         mudar_contenido(path,ruta_destino)
-        print(f"{path}  -  {ruta_destino}")
         mudar_media_multidisc(path,ruta_destino)
 
 
