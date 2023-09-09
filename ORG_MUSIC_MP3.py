@@ -120,7 +120,7 @@ def extraer_datos(path):
         datosAudio = eyed3.load(path)
         datosAudio.tag.save()
         return {
-                'artista_de_album' : eliminar_caracteres_especiales(datosAudio.tag.album_artist.split(",")[1]),
+                'artista_de_album' : eliminar_caracteres_especiales(datosAudio.tag.album_artist.split(",")[0]),
                 'album' : eliminar_caracteres_especiales(datosAudio.tag.album[0:50]),
                 'lanzamiento':f"({str(datosAudio.tag.recording_date)})"
         }
