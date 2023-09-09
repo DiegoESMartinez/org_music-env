@@ -70,10 +70,6 @@ def crear_directorios(diccionario:dict):
 #FUNCION PARA MOVER DE UNA CARPETA A OTRA EL CONTENIDO
 def mudar_contenido(ruta_origen,ruta_destino,multidisco:bool):
 
-    if multidisco:
-        #Si es multidisco se mueve la cover y el pdf al disc 1
-        mudar_media_multidisc(ruta_origen)
-
     #COPIAMOS LA CARPETA COMPLETA CON SU ESTRUCTURA
     contenido = os.listdir(ruta_origen)
     contenido = ignorar_archivos_temporales(ruta_origen, contenido)
@@ -90,6 +86,10 @@ def mudar_contenido(ruta_origen,ruta_destino,multidisco:bool):
         else:
             shutil.copy2(origen_elemento, destino_elemento)
 
+
+    if multidisco:
+        #Si es multidisco se mueve la cover y el pdf al disc 1
+        mudar_media_multidisc(ruta_destino)
 
 
 #FUNCION PARA FILTRAR LOS TEMPORALES 
@@ -110,7 +110,7 @@ def mudar_media_multidisc(carpeta_origen):
             if filename.endswith((".pdf", ".jpg")) and not filename.startswith("."):
                 origen = os.path.join(carpeta_origen, filename)
                 destino = os.path.join(carpeta_destino, filename)
-                shutil.copy(origen, destino)
+                shutil.move(origen, destino)
                 print(f"Moviendo {filename} a {carpeta_destino}")
 
 #FUNCION PARA SACAR METADATOS DE MP3
