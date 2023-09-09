@@ -68,7 +68,9 @@ def crear_directorios(diccionario:dict):
         return "ERROR"
 
 #FUNCION PARA MOVER DE UNA CARPETA A OTRA EL CONTENIDO
-def mudar_contenido(ruta_origen,ruta_destino,multidisco:bool):
+def mudar_contenido(ruta_origen,ruta_destino):
+
+
 
     #COPIAMOS LA CARPETA COMPLETA CON SU ESTRUCTURA
     contenido = os.listdir(ruta_origen)
@@ -82,14 +84,11 @@ def mudar_contenido(ruta_origen,ruta_destino,multidisco:bool):
         destino_elemento = os.path.join(ruta_destino, elemento)
         
         if os.path.isdir(origen_elemento):
-            mudar_contenido(origen_elemento, destino_elemento,False)
+            mudar_contenido(origen_elemento, destino_elemento)
         else:
-            shutil.copy2(origen_elemento, destino_elemento)
+            if not origen_elemento.endswith((".pdf", ".jpg")) :
+                shutil.copy2(origen_elemento, destino_elemento)
 
-
-    if multidisco:
-        #Si es multidisco se mueve la cover y el pdf al disc 1
-        mudar_media_multidisc(ruta_destino)
 
 
 #FUNCION PARA FILTRAR LOS TEMPORALES 
@@ -100,19 +99,27 @@ def ignorar_archivos_temporales(ruta, nombres):
 #    return [os.path.join(root, filename) for root, _, files in os.walk(ruta_origen) for filename in files if filename.startswith(".")] 
 
 #FUNCION PARA MOVER TODOS LOS COVER Y LOS PDF A DISC 1
-def mudar_media_multidisc(carpeta_origen):
+def mudar_media_multidisc(carpeta_origen,destinacion):
     
-    carpeta_destino = os.path.join(carpeta_origen,"Disc 1")
+    carpeta_destino = os.path.join(destinacion,"Disc 1")
+
+    contenido_origen=os.listdir(carpeta_origen)
+
+    print(carpeta_destino)
 
     # Recorre el directorio de origen
 # Recorre el directorio de origen y sus subdirectorios de forma recursiva
-    for filename in carpeta_origen:
+    print("###########################################################")
+    for filename in contenido_origen:
+            print(f"{filename} : {os.path.basename(filename).endswith(('.pdf', '.jpg')) and not os.path.basename(filename).startswith('.')}")
             if filename.endswith((".pdf", ".jpg")) and not filename.startswith("."):
-                origen = os.path.join(carpeta_origen, filename)
-                destino = os.path.join(carpeta_destino, filename)
-                shutil.move(origen, destino)
+                origen = os.path.join(carpeta_origen,filename)
+                destino = os.path.join(carpeta_destino,filename)
+                print(f"ORIGEN: {origen} -|- DESTINO: {destino}")
+                shutil.copy2(origen, destino)
                 print(f"Moviendo {filename} a {carpeta_destino}")
-
+    
+    print("###########################################################")
 #FUNCION PARA SACAR METADATOS DE MP3
 def extraer_datos(path):
     if existeRuta(path):
@@ -137,7 +144,7 @@ def disco_unico(path,item_path):
          return
     else:
        ruta_destino = crear_directorios(datos_album) 
-       mudar_contenido(path,ruta_destino,False)
+       mudar_contenido(path,ruta_destino)
         
 
 
@@ -150,7 +157,9 @@ def multi_disco(path,item_path):
             return
     else:
         ruta_destino = crear_directorios(datos_album) 
-        mudar_contenido(path,ruta_destino,True)
+        mudar_contenido(path,ruta_destino)
+        print(f"{path}  -  {ruta_destino}")
+        mudar_media_multidisc(path,ruta_destino)
 
 
 ##################################################################################################################
