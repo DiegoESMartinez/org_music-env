@@ -99,9 +99,9 @@ def ignorar_archivos_temporales(ruta, nombres):
 #    return [os.path.join(root, filename) for root, _, files in os.walk(ruta_origen) for filename in files if filename.startswith(".")] 
 
 #FUNCION PARA MOVER TODOS LOS COVER Y LOS PDF A DISC 1
-def mudar_media_multidisc(carpeta_origen,destinacion):
+def mudar_media_multidisc(carpeta_origen,destinacion,multidisco:bool):
     
-    carpeta_destino = os.path.join(destinacion,"Disc 1")
+    carpeta_destino = os.path.join(destinacion,"Disc 1") if multidisco else destinacion
 
     contenido_origen=os.listdir(carpeta_origen)
 
@@ -137,8 +137,9 @@ def disco_unico(path,item_path):
          print(datos_album["ERROR"])
          return
     else:
-       ruta_destino = crear_directorios(datos_album) 
-       mudar_contenido(path,ruta_destino)
+        ruta_destino = crear_directorios(datos_album) 
+        mudar_contenido(path,ruta_destino)
+        mudar_media_multidisc(path,ruta_destino,False)
         
 
 
@@ -152,7 +153,7 @@ def multi_disco(path,item_path):
     else:
         ruta_destino = crear_directorios(datos_album) 
         mudar_contenido(path,ruta_destino)
-        mudar_media_multidisc(path,ruta_destino)
+        mudar_media_multidisc(path,ruta_destino,True)
 
 
 ##################################################################################################################
