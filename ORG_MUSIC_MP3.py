@@ -68,7 +68,7 @@ def crear_directorios(diccionario:dict):
         return "ERROR"
 
 #FUNCION PARA MOVER DE UNA CARPETA A OTRA EL CONTENIDO
-def mudar_contenido(ruta_origen,ruta_destino):
+def mudar_contenido(ruta_origen,ruta_destino,multidisco:bool):
 
 
 
@@ -84,9 +84,9 @@ def mudar_contenido(ruta_origen,ruta_destino):
         destino_elemento = os.path.join(ruta_destino, elemento)
         
         if os.path.isdir(origen_elemento):
-            mudar_contenido(origen_elemento, destino_elemento)
+            mudar_contenido(origen_elemento, destino_elemento,multidisco)
         else:
-            if not origen_elemento.endswith((".pdf", ".jpg")) :
+            if  not origen_elemento.endswith((".pdf", ".jpg")) if servidor == "2" and multidisco else True :
                 shutil.copy2(origen_elemento, destino_elemento)
 
 
@@ -138,8 +138,7 @@ def disco_unico(path,item_path):
          return
     else:
         ruta_destino = crear_directorios(datos_album) 
-        mudar_contenido(path,ruta_destino)
-        mudar_media_multidisc(path,ruta_destino,False)
+        mudar_contenido(path,ruta_destino,False)
         
 
 
@@ -152,8 +151,9 @@ def multi_disco(path,item_path):
             return
     else:
         ruta_destino = crear_directorios(datos_album) 
-        mudar_contenido(path,ruta_destino)
-        mudar_media_multidisc(path,ruta_destino,True)
+        mudar_contenido(path,ruta_destino,True)
+        if servidor == "2":
+            mudar_media_multidisc(path,ruta_destino,True)
 
 
 ##################################################################################################################
@@ -165,13 +165,41 @@ sisOpe=sistemaOperativo()
 
 #PEDIR RUTA DE ORIGEN DE LOS ALBUMES
 print(f"SISTEMA OPERATIVO: {sisOpe}")
-fuente_canciones =input("RUTA BASE (ORIGEN) DE LOS ALBUMES: ")
+fuente_canciones=""
+while(True):
+    fuente_canciones =input("RUTA BASE (ORIGEN) DE LOS ALBUMES: ")
+    if existeRuta(fuente_canciones):
+        break
+    else:
+        print("La ruta de base que has introducido no existe.")
+        if input("¿DESEA VOLVER A INTRODUCIR LA RUTA BASE? SI/NO : ").upper()!="SI":            
+            print("Como ha introducido no o cualquier otra para palabra diferente a 'SI' se cierra automaticamente el programa")
+            sys.exit()
+
 #PEDIR RUTA DE GUARDACION
-destino_canciones = input("DESTINO DE LAS CANCIONES: ")
+destino_canciones=""
+while(True):
+    destino_canciones = input("DESTINO DE LAS CANCIONES: ")
+    if existeRuta(destino_canciones):
+        break
+    else:
+        print("La ruta de destino que has introducido no existe.")
+        if input("¿DESEA VOLVER A INTRODUCIR LA RUTA DESTINO? SI/NO : ").upper()!="SI":
+            print("Como ha introducido no o cualquier otra para palabra diferente a 'SI' se cierra automaticamente el programa")
+            sys.exit()
+
+#PREGUNTAR PARA QUE SERVIDOR ESTA DIRIGIDO
+servidor=input("SELECCIONE PARA QUE TIPO DE SERVIDOR QUIERE LA ESTRUCTURA DE ARCHIVOS\n1- Jellyfin\n2. Navidrome\nCualquier otro numero o caracter producirá que se cierre el programa\nINTRODUZCA SU SERVIDOR (1\\2): ")
+if servidor not in ["1","2"]:
+        print("Como ha introducido un numero o cualquier otro caracter diferente a '1' o '2' se cierra automaticamente el programa")
+
+
+
+
 
 
 #Comprobar si la ruta existe
-if existeRuta(fuente_canciones):
+if existeRuta(fuente_canciones) and existeRuta(destino_canciones):
 #RECORRER RUTA DE CARPETA RAIZ SI EXISTE CARPETA
     recorrer_directorios(fuente_canciones,False)
 
@@ -214,5 +242,4 @@ PROCESO FINALIZADO
 """
 
     print(mensaje_despedida)
-else:
-    print(f"La carpeta de origen de los albumes: '{fuente_canciones}' no existe. \n ¿Tu eres subnormal o te haces?")
+
