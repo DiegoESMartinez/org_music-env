@@ -58,19 +58,22 @@ def eliminar_caracteres_especiales(texto):
 def crear_directorios(diccionario:dict):
     ruta_carpeta_completa = os.path.join(destino_canciones, f'{diccionario["artista_de_album"]}')
     ruta_carpeta_completa = os.path.join(ruta_carpeta_completa, f'{diccionario["album"]} {diccionario["lanzamiento"]}')
-# Intenta crear la carpeta completa junto con todas las subcarpetas necesarias
-    try:
-        os.makedirs(ruta_carpeta_completa)
-        print(f"Carpeta completa '{ruta_carpeta_completa}' creada exitosamente.")
-        return ruta_carpeta_completa
-    except OSError as error:
-        print(f"No se pudieron crear las carpetas: {error}")
+    #Comprobamos si la carpeta ya existe para no generar errores
+    if existeRuta(ruta_carpeta_completa):
+        print(f"El directorio del album {ruta_carpeta_completa} ya existe.")
         return "ERROR"
+    else:   
+    # Intenta crear la carpeta completa junto con todas las subcarpetas necesarias
+        try:
+            os.makedirs(ruta_carpeta_completa)
+            print(f"Carpeta completa '{ruta_carpeta_completa}' creada exitosamente.")
+            return ruta_carpeta_completa
+        except OSError as error:
+            print(f"No se pudieron crear las carpetas: {error}")
+            return "ERROR"
 
 #FUNCION PARA MOVER DE UNA CARPETA A OTRA EL CONTENIDO
 def mudar_contenido(ruta_origen,ruta_destino,multidisco:bool):
-
-
 
     #COPIAMOS LA CARPETA COMPLETA CON SU ESTRUCTURA
     contenido = os.listdir(ruta_origen)
@@ -112,7 +115,6 @@ def mudar_media_multidisc(carpeta_origen,destinacion,multidisco:bool):
                 origen = os.path.join(carpeta_origen,filename)
                 destino = os.path.join(carpeta_destino,filename)
                 shutil.copy2(origen, destino)
-                print(f"Moviendo {filename} a {carpeta_destino}")
 
 #FUNCION PARA SACAR METADATOS DE MP3
 def extraer_datos(path):
@@ -138,6 +140,9 @@ def disco_unico(path,item_path):
          return
     else:
         ruta_destino = crear_directorios(datos_album) 
+        #Comprobamos si la creación de directorio ha dado error para no seguir con el mudar contenido
+        if ruta_destino=="ERROR":
+            return
         mudar_contenido(path,ruta_destino,False)
         
 
@@ -151,6 +156,9 @@ def multi_disco(path,item_path):
             return
     else:
         ruta_destino = crear_directorios(datos_album) 
+        #Comprobamos si la creación de directorio ha dado error para no seguir con el mudar contenido
+        if ruta_destino=="ERROR":
+            return
         mudar_contenido(path,ruta_destino,True)
         if servidor == "2":
             mudar_media_multidisc(path,ruta_destino,True)
@@ -198,47 +206,30 @@ if servidor not in ["1","2"]:
 
 
 
-#Comprobar si la ruta existe
+#Comprobar si la ruta existes
 if existeRuta(fuente_canciones) and existeRuta(destino_canciones):
+    print("#################################################################")
+    print("#                       Inicio del proceso                      #")
+    print("#################################################################\n")
 #RECORRER RUTA DE CARPETA RAIZ SI EXISTE CARPETA
     recorrer_directorios(fuente_canciones,False)
 
     mensaje_despedida="""
-PROCESO FINALIZADO
-
-                                    /T /I                     
-                                   / |/ | .-~/                
-                               T\ Y  I  |/  /  _              
-              /T               | \I  |  I  Y.-~/              
-             I l   /I       T\ |  |  l  |  T  /               
-          T\ |  \ Y l  /T   | \I  l   \ `  l Y                
-      __  | \l   \l  \I l __l  l   \   `  _. |                
-      \ ~-l  `\   `\  \  \\ ~\  \   `. .-~   |                
-       \   ~-. "-.  `  \  ^._ ^. "-.  /  \   |                
-     .--~-._  ~-  `  _  ~-_.-"-." ._ /._ ." ./                
-      >--.  ~-.   ._  ~>-"    "\\   7   7   ]                 
-     ^.___~"--._    ~-{  .-~ .  `\ Y . /    |                 
-      <__ ~"-.  ~       /_/   \   \I  Y   : |                 
-        ^-.__           ~(_/   \   >._:   | l______           
-            ^--.,___.-~"  /_/   !  `-.~"--l_ /     ~"-.                      
-                   (_/ .  ~(   /'     "~"--,Y   -=b-. _)      
-                    (_/ .  \  :           / l      c"~o \     
-                     \ /    `.    .     .^   \_.-~"~--.  )    
-                      (_/ .   `  /     /       !       )/     
-                       / / _.   '.   .':      /        '      
-                       ~(_/ .   /    _  `  .-<_               
-                         /_/ . ' .-~" `.  / \  \          ,z=.
-                         ~( /   '  :   | K   "-.~-.______//   
-                           "-,.    l   I/ \_    __{--->._(==. 
-                            //(     \  <    ~"~"     //       
-                           /' /\     \  \     ,v=.  ((        
-                         .^. / /\     "  }__ //===-  `       GRACIAS POR UTILIZAR NUESTRO SCRIPT :) 
-                        / / ' '  "-.,__ {---(==-              
-                      .^ '       :  T  ~"   ll         
-                     / .  .  . : | :!        \\               
-                    (_/  /   | | j-"          ~^              
-                      ~-<_(_.^-~"                         
-    
+#################################################################
+#                       Fin del proceso                         #
+#                                                               #
+#                      ///,        ////                         #
+#                      \  /,      /  >.                         #
+#                      \  /,   _/  /.                           #
+#                       \_  /_/   /.                            #
+#                        \__/_   <    GRACIAS POR UTILIZAR      #
+#                       /<<< \_\_        NUESTRO SCRIPT :)      #
+#                      /,)^>>_._ \\                              #
+#                     (/   \\ /\\\\                                #
+#                         // ```//                              #    
+#                  ======((`===((==                             #
+#                                                               #
+#################################################################
 """
 
     print(mensaje_despedida)
