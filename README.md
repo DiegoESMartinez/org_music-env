@@ -1,5 +1,5 @@
 # ORG_MUSIC_MP3
-#Organizador de archivos de música
+# Organizador de archivos de música
 Este script en Python está diseñado para organizar tus archivos de música en una estructura específica. Puede ser útil si tienes una colección de música desorganizada y quieres organizarla de manera ordenada para su uso en servidores de medios como Jellyfin y Navidrome.
 
 ## Características
