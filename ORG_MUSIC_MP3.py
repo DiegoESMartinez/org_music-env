@@ -197,7 +197,7 @@ while(True):
             sys.exit()
 
 #PREGUNTAR PARA QUE SERVIDOR ESTA DIRIGIDO
-servidor=input("SELECCIONE PARA QUE TIPO DE SERVIDOR QUIERE LA ESTRUCTURA DE ARCHIVOS\n1- Jellyfin\n2. Navidrome\nCualquier otro numero o caracter producirá que se cierre el programa\nINTRODUZCA SU SERVIDOR (1\\2): ")
+servidor=input("SELECCIONE PARA QUE TIPO DE SERVIDOR QUIERE LA ESTRUCTURA DE ARCHIVOS\n1- Jellyfin\n2- Navidrome\nCualquier otro numero o caracter producirá que se cierre el programa\nINTRODUZCA SU SERVIDOR (1\\2): ")
 if servidor not in ["1","2"]:
         print("Como ha introducido un numero o cualquier otro caracter diferente a '1' o '2' se cierra automaticamente el programa")
 
